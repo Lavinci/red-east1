@@ -1,0 +1,31 @@
+#ifndef _SENSOR_H_
+#define _SENSOR_H_
+#include "stm32f10x.h"
+#include "stm32f10x_gpio.h"
+
+
+#define FRONT_PORT GPIOC
+#define FRONT_PIN GPIO_Pin_10
+#define JIGUANG1_PORT GPIOC
+#define JIGUANG1_PIN GPIO_Pin_1
+#define JIGUANG2_PORT GPIOC
+#define JIGUANG2_PIN GPIO_Pin_2
+#define JIGUANG3_PORT GPIOB
+#define JIGUANG3_PIN GPIO_Pin_12
+
+#define FRONT_In GPIO_ReadInputDataBit(FRONT_PORT,FRONT_PIN)
+#define JIGUANG1_In GPIO_ReadInputDataBit(JIGUANG1_PORT,JIGUANG1_PIN)
+#define JIGUANG2_In GPIO_ReadInputDataBit(JIGUANG2_PORT,JIGUANG2_PIN)
+#define JIGUANG3_In GPIO_ReadInputDataBit(JIGUANG3_PORT,JIGUANG3_PIN)
+
+/*
+#define FRONT_In (FRONT_PORT->IDR&FRONT_PIN)
+#define JIGUANG1_In (JIGUANG1_PORT->IDR&JIGUANG1_PIN)
+#define JIGUANG2_In (JIGUANG2_PORT->IDR&JIGUANG2_PIN)
+#define JIGUANG3_In (JIGUANG3_PORT->IDR&JIGUANG3_PIN)
+*/
+void DisInit(void);
+
+uint16_t GetDis(void); // 0前 1后
+
+#endif
