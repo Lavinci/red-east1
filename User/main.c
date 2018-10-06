@@ -12,7 +12,8 @@ int Encoder_A,Encoder_B,Encoder_C,Encoder_D;          //编码器的脉冲计数
 long int Position_A,Position_B,Position_C,Position_D,Rate_A,Rate_B,Rate_C,Rate_D; //PID控制相关变量
 int Encoder_A_EXTI;                       //通过外部中断读取的编码器数据
 long int Motor_A,Motor_B,Motor_C,Motor_D;        //电机PWM变量
-long int Target_A,Target_B,Target_C,Target_D;     //电机目标值
+long int Target_A,Target_B,Target_C,
+	Target_D;     //电机目标值
 int Voltage;                             //电池电压采样相关的变量
 float Show_Data_Mb;                      //全局显示变量，用于显示需要查看的数据
 u8 delay_50,delay_flag,delay_flag1;                          //延时相关变量
