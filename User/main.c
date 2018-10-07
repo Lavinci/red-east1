@@ -50,7 +50,7 @@ int main()
   Adc_Init();                     //=====adc初始化
 	IIC_Init();                     //=====IIC初始化
   MPU6050_initialize();           //=====MPU6050初始化
-  DMP_Init();                     //=====初始化DMP
+//  DMP_Init();                     //=====初始化DMP
 	MiniBalance_PWM_Init(7199,0);   //=====初始化PWM 10KHZ，用于驱动电机
 	if(KEY==0) Flash_Read();        //=====读取Flash里面的参数
   EXTI_Initmm();                    //=====MPU6050 5ms定时中断初始化
@@ -68,7 +68,7 @@ int main()
 	while(1)
 	{
 		//Servo_Right();
-		Left(50,400000);
+		Left(10,400000);
 
 /*		//walk(50,4000);
 		//出发

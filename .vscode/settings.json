@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "stm32f10x.h": "c",
+    "init.h": "c",
+    "pwm.h": "c",
+    "utility": "c",
+    "misc.h": "c",
+    "stm32f10x_tim.h": "c",
+    "stm32f10x_it.h": "c",
+    "stm32f10x_gpio.h": "c",
+    "sys.h": "c"
+  }
+}
