@@ -24,7 +24,6 @@ int Position_PID_A (int Encoder,int Target);
 int Position_PID_B (int Encoder,int Target);
 int Position_PID_C (int Encoder,int Target);
 int Position_PID_D (int Encoder,int Target);
-void Count_Velocity(void);
 void CAN_N_Usart_Control(void); 
 
 

@@ -10,7 +10,6 @@ extern long int Target_A,Target_B,Target_C,Target_D;
 extern int delay_5ms;
 extern u8 delay_flag;
 extern u8 delay_flag1;
-extern float Move_X,Move_Y,Move_Z;
 int delay_5ms1;
 #define A 5
 uint16_t filter(uint16_t in)
@@ -199,13 +198,6 @@ void walk4(long int Runtime,long int Alltime)
 		}
 	}
 	delay_flag1=0;
-}
-void GoPosition(long int x,long int y,long int time)
-{
-			Move_X=x;
-			Move_Y=y;
-
-	delayy(time);
 }
 
 void strightR()

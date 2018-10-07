@@ -20,9 +20,6 @@ void walk2(long int Runtime,long int Alltime);
 void walk3(long int Runtime,long int Alltime);
 void walk4(long int Runtime,long int Alltime);
 
-//位置式
-void GoPosition(long long int x,long long int y,long int time);
-
 
 void strightL(void);
 void strightR(void);

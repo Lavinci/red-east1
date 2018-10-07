@@ -312,24 +312,3 @@ int Position_PID_D (int Encoder,int Target)
 	 Last_Bias=Bias;                                       //保存上一次偏差 
 	 return Pwm;                                           //增量输出
 }
-
-/**************************************************************************
-函数功能：每个电机位置控制过程速度计算
-入口参数：无
-返回  值：无
-**************************************************************************/
-void Count_Velocity(void)
-{
-	static double Last_Target_X,Last_Target_Y,Last_Target_Z,Divider;
-	double Bias_X,Bias_Y,Bias_Z;
-	Bias_X=(Move_X-Last_Target_X);  //求X轴位移量
-	Bias_Y=(Move_Y-Last_Target_Y);	//求Y轴位移量
-	Bias_Z=(Move_Z-Last_Target_Z);	//求Z轴位移量
-	if(Bias_X!=0||Bias_Y!=0||Bias_Z!=0)Divider=sqrt(Bias_X*Bias_X+Bias_Y*Bias_Y+Bias_Z*Bias_Z);
-	if(Bias_X!=0||Bias_Y!=0||Bias_Z!=0) Kinematic_Analysis2(Bias_X,Bias_Y,Bias_Z);
-
-	Xianfu_Velocity(RC_Velocity*myabs(Rate_A)/Divider,RC_Velocity*myabs(Rate_B)/Divider,RC_Velocity*myabs(Rate_C)/Divider,RC_Velocity*myabs(Rate_D)/Divider); 
-	Last_Target_X=Move_X;   //保存X轴上一次的位置信息，便于调用
-	Last_Target_Y=Move_Y;   //保存Y轴上一次的位置信息，便于调用
-	Last_Target_Z=Move_Z;   //保存Z轴上一次的位置信息，便于调用
-}
