@@ -155,6 +155,9 @@ void EXTI3_IRQHandler()
   if(Ball[0])
 	  Servo_Right();//ÓÒ»÷´ò
 
+	
+	
+	
 //---------¿ªÆôÎ»ÖÃPID-------------------------		
 	ns.NVIC_IRQChannel=EXTI15_10_IRQn;
   ns.NVIC_IRQChannelCmd=ENABLE;
