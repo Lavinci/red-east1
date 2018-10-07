@@ -5,6 +5,8 @@
 #include "camera.h"
 #include "mine.h"
 u8 Ball[8];
+
+extern u32  Distance;
 //------------------------------------
 u8 Flag_Show=0;                 								//停止标志位和 显示标志位 默认停止 显示打开
 int Encoder_A,Encoder_B,Encoder_C,Encoder_D;    //编码器的脉冲计数
@@ -24,20 +26,23 @@ int main()
 {
 	Stm32_Clock_Init(9);            //=====系统时钟设置
 	delay_init(72);                 //=====延时初始化
-	ServoInit();
+	ServoInit();	
+	TIM6_Init();
+  Sonic_Init();
 	JTAG_Set(JTAG_SWD_DISABLE);     //=====关闭JTAG接口
 	JTAG_Set(SWD_ENABLE);           //=====打开SWD接口 可以利用主板的SWD接口调试
 	LED_Init();                     //=====初始化与 LED 连接的硬件接口
+	USART1_Config(115200);
 //	KEY_Init();                     //=====按键初始化
 	/* 这里预留为跑路或者栽树模式*/
 	//if(MODE==0)Run_Flag=1;          //=====启动的过程中，根据模式选择开关确定进入位置模式还是速度模式
 	//else Run_Flag=0;                //=====启动的过程中，根据模式选择开关确定进入位置模式还是速度模式
 	Run_Flag=0;											//固定为速度模式
 	OLED_Init();                    //=====OLED初始化
-	Encoder_Init_TIM2();            //=====编码器接口
-	Encoder_Init_TIM3();            //=====编码器接口
-	Encoder_Init_TIM4();            //=====初始化编码器C
-	Encoder_Init_TIM5();            //=====初始化编码器D
+//	Encoder_Init_TIM2();            //=====编码器接口
+//	Encoder_Init_TIM3();            //=====编码器接口
+//	Encoder_Init_TIM4();            //=====初始化编码器C
+//	Encoder_Init_TIM5();            //=====初始化编码器D
   Adc_Init();                     //=====adc初始化
 	IIC_Init();                     //=====IIC初始化
 	MiniBalance_PWM_Init(7199,0);   //=====初始化PWM 10KHZ，用于驱动电机
@@ -47,17 +52,20 @@ int main()
 	DisInit();
 	Camera_Init();
 
+
 	Ball[0]=1;
 	Ball[1]=1;
-
-	delayy(200);
-	OLED_ShowString(10,40,"Start");OLED_Refresh_Gram();
-	delayy(200);
 
 	while(1)
 	{
 		//Servo_Right();
-		Left(3,400000);
+//		Left(3,400000);
+	printf("11111");
+		OLED_ShowNumber(10,40,Distance,5,16);
+		OLED_Refresh_Gram();
+		delayMs(100);
+		
+	//	SABCD(10,10,10,10);
 /*		//walk(50,4000);
 		//出发
 		Go(20,250);

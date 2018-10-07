@@ -32,7 +32,6 @@
 "..\output\led.o"
 "..\output\key.o"
 "..\output\oled.o"
-"..\output\usart.o"
 "..\output\adc.o"
 "..\output\motor.o"
 "..\output\encoder.o"
@@ -49,6 +48,8 @@
 "..\output\mine.o"
 "..\output\sensor.o"
 "..\output\camera.o"
+"..\output\hcsr04.o"
+"..\output\usart1.o"
 --strict --scatter "..\Output\Robot.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

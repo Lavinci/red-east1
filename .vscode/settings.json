@@ -11,6 +11,8 @@
     "sys.h": "c",
     "can.h": "c",
     "mpu6050.h": "c",
-    "datascope_dp.h": "c"
+    "datascope_dp.h": "c",
+    "inv_mpu_dmp_motion_driver.h": "c",
+    "encoder.h": "c"
   }
 }

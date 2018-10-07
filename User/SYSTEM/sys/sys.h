@@ -68,7 +68,7 @@
 #include "led.h"
 #include "key.h"
 #include "oled.h"
-#include "usart.h"
+#include "usart1.h"
 #include "adc.h"
 #include "timer.h"
 #include "motor.h"

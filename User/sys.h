@@ -68,7 +68,6 @@
 #include "led.h"
 #include "key.h"
 #include "oled.h"
-#include "usart.h"
 #include "adc.h"
 #include "timer.h"
 #include "motor.h"
@@ -78,6 +77,8 @@
 #include "exti.h"
 #include "DataScope_DP.h"
 #include "stmflash.h"
+#include "hcsr04.h"
+#include "usart1.h"
 //#include "Servo.h"
 
 #define JTAG_SWD_DISABLE   0X02

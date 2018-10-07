@@ -14,7 +14,7 @@
  */
 #include <sys.h>
 #include "delay.h"
-#include "usart.h"
+#include "usart1.h"
 #include "ioi2c.h"
 
 /* The following functions must be defined for this platform:
