@@ -69,17 +69,14 @@
 #include "key.h"
 #include "oled.h"
 #include "usart.h"
-#include "usartx.h"
 #include "adc.h"
 #include "timer.h"
 #include "motor.h"
 #include "encoder.h"
 #include "ioi2c.h"
-#include "mpu6050.h"
-#include "show.h"								   
+#include "show.h"
 #include "exti.h"
 #include "DataScope_DP.h"
-#include "CAN.h"
 #include "stmflash.h"
 //#include "Servo.h"
 
@@ -88,7 +85,6 @@
 #define JTAG_SWD_ENABLE    0X00	
 extern int Encoder_A,Encoder_B,Encoder_C,Encoder_D;                    //???????????????
 extern long int Motor_A,Motor_B,Motor_C,Motor_D;                   //???PWM????
-extern u8 Flag_Left,Flag_Right,Flag_sudu,Flag_Direction; //??????????????
 extern u8 Flag_Stop,Flag_Show;                               //?????¦Ë?? ??????¦Ë ????? ?????
 extern long int Target_A,Target_B,Target_C,Target_D,Rate_A,Rate_B,Rate_C,Rate_D;                      //?????????
 extern  int Voltage,Voltage_Zheng,Voltage_Xiao;                //????????????????
@@ -100,8 +96,7 @@ extern u8 Bi_zhang,delay_50,delay_flag;
 extern float Acceleration_Z;
 extern int RC_Velocity,RC_Position;
 extern int Encoder_A_EXTI;
-extern u8 Run_Flag,PID_Send,Flash_Send,Turn_Flag;
-extern u8 rxbuf[8],Urxbuf[8],txbuf[8],txbuf2[8],CAN_ON_Flag,Usart_ON_Flag,Usart_Flag;
+extern u8 Run_Flag,PID_Send,Flash_Send;
 extern float Pitch,Roll,Yaw,Move_X,Move_Y,Move_Z; 
 extern long int Position_A,Position_B,Position_C,Position_D;
 extern u16 PID_Parameter[10],Flash_Parameter[10];

@@ -70,14 +70,7 @@ int EXTI15_10_IRQHandler(void) //5ms
 			//	 if(++delay_50==200)	 delay_50=0,delay_flag=0;                     //给主函数提供50*20ms的精准延时
 				 ++delay_5ms1;                     //给主函数提供50*20ms的精准延时
 			 }
-//			 GPIOB->ODR^=GPIO_Pin_13;
-		  if(Flag_Target==1)                                                  //5ms读取一次陀螺仪和加速度计的值
-			{
-					if(Usart_Flag==0&&Usart_ON_Flag==1)  memcpy(rxbuf,Urxbuf,8*sizeof(u8));	//如果解锁了串口控制标志位，进入串口控制模式
-					Read_DMP();                                                           //===更新姿态		
-			  	//Key();//扫描按键变化	
-			return 0;	                                               
-			}                                                                      //===10ms控制一次，为了保证M法测速的时间基准，首先读取编码器数据
+     	//===10ms控制一次，为了保证M法测速的时间基准，首先读取编码器数据
 			Encoder_A=Read_Encoder(2);                                          //===读取编码器的值
 			Position_A+=Encoder_A;                                                 //===积分得到速度   
 			Encoder_B=Read_Encoder(3);                                          //===读取编码器的值
@@ -86,44 +79,20 @@ int EXTI15_10_IRQHandler(void) //5ms
 			Position_C+=Encoder_C;                                                 //===积分得到速度   
 			Encoder_D=-Read_Encoder(5);                                         //===读取编码器的值
 			Position_D+=Encoder_D;                                                 //===积分得到速度   
-	  	Read_DMP();                                                            //===更新姿态	
   		Led_Flash(100);                                                        //===LED闪烁;常规模式 1s改变一次指示灯的状态	
 			Voltage_All+=Get_battery_volt();                                       //多次采样累积
 			if(++Voltage_Count==100) Voltage=Voltage_All/100,Voltage_All=0,Voltage_Count=0;//求平均值 获取电池电压	       
-		  if(CAN_ON_Flag==1||Usart_ON_Flag==1) CAN_N_Usart_Control();          //接到串口或者CAN遥控解锁指令之后，使能CAN和串口控制输入
 			if(RC_Velocity>0&&RC_Velocity<15)  RC_Velocity=15;                   //避免电机进入低速非线性区
 
 		 if(Turn_Off(Voltage)==0)               //===如果电池电压不存在异常
 		 { 			 
 		  if(Run_Flag==0)//速度模式
 			{		
-				//if(CAN_ON_Flag==0&&Usart_ON_Flag==0)  Get_RC(Run_Flag);                //===串口和CAN控制都未使能，则接收蓝牙遥控指
 				Motor_A=Incremental_PI_A(Encoder_A,Target_A);                         //===速度闭环控制计算电机A最终PWM
 				Motor_B=Incremental_PI_B(Encoder_B,Target_B);                         //===速度闭环控制计算电机B最终PWM
 				Motor_C=Incremental_PI_C(Encoder_C,Target_C);                         //===速度闭环控制计算电机C最终PWM
 				Motor_D=Incremental_PI_D(Encoder_D,Target_D);                         //===速度闭环控制计算电机C最终PWM
 			}
-			 else//位置模式
-			{
-				if(CAN_ON_Flag==0&&Usart_ON_Flag==0) //===串口和CAN控制都未使能，则接收蓝牙遥控指令
-				 {	
-					if(Turn_Flag==0) 	Flag_Direction=x;//click_RC();     
-					Get_RC(Run_Flag);
-					 x=0;
-				 }
-					Motor_A=Position_PID_A(Position_A,Target_A)>>8;//位置闭环控制，计算电机A速度内环的输入量
-					Motor_B=Position_PID_B(Position_B,Target_B)>>8;//位置闭环控制，计算电机B速度内环的输入量
-					Motor_C=Position_PID_C(Position_C,Target_C)>>8;//位置闭环控制，计算电机C速度内环的输入量
-				 	Motor_D=Position_PID_D(Position_D,Target_D)>>8;//位置闭环控制，计算电机C速度内环的输入量
-				
-			 //  if(rxbuf[0]!=2)  Count_Velocity();   //这是调节位置控制过程的速度大小
-					//else 	
-					Xianfu_Velocity(RC_Velocity,RC_Velocity,RC_Velocity,RC_Velocity); 
-					Motor_A=Incremental_PI_A(Encoder_A,-Motor_A);         //===速度闭环控制计算电机A最终PWM
-					Motor_B=Incremental_PI_B(Encoder_B,-Motor_B);         //===速度闭环控制计算电机B最终PWM
-					Motor_C=Incremental_PI_C(Encoder_C,-Motor_C);         //===速度闭环控制计算电机C最终PWM
-					Motor_D=Incremental_PI_D(Encoder_D,-Motor_D);         //===速度闭环控制计算电机C最终PWM
-			}	 
 		 Xianfu_Pwm(6900);                     //===PWM限幅
 		 Set_Pwm(Motor_A,Motor_B,Motor_C,Motor_D);     //===赋值给PWM寄存器  
 		 }
@@ -343,67 +312,7 @@ int Position_PID_D (int Encoder,int Target)
 	 Last_Bias=Bias;                                       //保存上一次偏差 
 	 return Pwm;                                           //增量输出
 }
-/**************************************************************************
-函数功能：通过串口指令对小车进行遥控
-入口参数：串口指令
-返回  值：无
-**************************************************************************/
-void Get_RC(u8 mode)
-{
 
-	float step=0.5;  //设置速度控制步进值。
-	u8 Flag_Move=1;
-	  if(mode==0)//速度
-		{	
-				 switch(Flag_Direction)   //方向控制
-				 {
-				 case 1:  Move_X=0;           Move_Y+=step;  Flag_Move=1;               break;
-				 case 2:  Move_X+=step;       Move_Y+=step;  Flag_Move=1;               break;
-				 case 3:  Move_X+=step;       Move_Y=0;      Flag_Move=1;               break;
-				 case 4:  Move_X+=step;       Move_Y-=step;  Flag_Move=1;               break;
-				 case 5:  Move_X=0;           Move_Y-=step;  Flag_Move=1;               break;
-				 case 6:  Move_X-=step;       Move_Y-=step;  Flag_Move=1;               break;
-				 case 7:  Move_X-=step;       Move_Y=0;      Flag_Move=1;               break;
-				 case 8:  Move_X-=step;       Move_Y+=step;  Flag_Move=1;               break; 
-				 default: Flag_Move=0;   		  Move_X=Move_X/1.05;Move_Y=Move_Y/1.05;      break;	 
-			 }
-				 
-			if(Flag_Move==0)		//如果无方向控制指令	 ，检查转向控制状态
-			{	
-				if(Flag_Left==1)        Move_Z-=step,Gyro_K=0;    //左自旋   
-				else if(Flag_Right==1)  Move_Z+=step,Gyro_K=0;    //右自旋		
-				else 		                Move_Z=0,Gyro_K=0.004;    //停止
-			}	
-				if(Flag_Move==1)	Flag_Left=0,Flag_Right=0,Move_Z=0;
-				if(Move_X<-RC_Velocity) Move_X=-RC_Velocity;	   //速度控制限幅
-				if(Move_X>RC_Velocity)  Move_X=RC_Velocity;	     
-				if(Move_Y<-RC_Velocity) Move_Y=-RC_Velocity;	
-				if(Move_Y>RC_Velocity)  Move_Y=RC_Velocity;	 
-				if(Move_Z<-RC_Velocity) Move_Z=-RC_Velocity;	
-				if(Move_Z>RC_Velocity)  Move_Z=RC_Velocity;	 
-			 
-	 }
-		 else if(mode==1)//位置模式
-		{	
-				/* switch(Flag_Direction)   //方向控制
-				 {
-				 case 1:  Move_Y+=RC_Position; Flag_Change=1;break;
-				 case 2:  Move_X+=RC_Position; Flag_Change=2; Move_Y+=RC_Position; break;
-				 case 3:  Move_X+=RC_Position; Flag_Change=3;break;
-				 case 4:  Move_X+=RC_Position; Flag_Change=4;Move_Y-=RC_Position;break;
-				 case 5:  Move_Y-=RC_Position; Flag_Change=5;break;
-				 case 6:  Move_X-=RC_Position; Flag_Change=6;Move_Y-=RC_Position; break;
-				 case 7:  Move_X-=RC_Position; Flag_Change=7; break;
-				 case 8:  Move_X-=RC_Position; Flag_Change=8;Move_Y+=RC_Position;break;			 
-				 case 9:  Move_Z-=RC_Position; Flag_Change=9; break;
-				 case 10: Move_Z+=RC_Position; Flag_Change=10;break;			 
-				 default: break;	
-			 }*/
-
-			
-	 }
-		 Kinematic_Analysis(Move_X,Move_Y,Move_Z);//得到控制目标值，进行运动学分析
-}
 /**************************************************************************
 函数功能：每个电机位置控制过程速度计算
 入口参数：无
@@ -424,53 +333,3 @@ void Count_Velocity(void)
 	Last_Target_Y=Move_Y;   //保存Y轴上一次的位置信息，便于调用
 	Last_Target_Z=Move_Z;   //保存Z轴上一次的位置信息，便于调用
 }
-/**************************************************************************
-函数功能：接收CAN或者串口控制指令进行处理
-入口参数：无
-返回  值：无
-**************************************************************************/
-void CAN_N_Usart_Control(void)
-{
-	 int flag_1, flag_2,flag_3,flag_4;
-	 if(Run_Flag==0)//速度模式
-	 {
-		 if(rxbuf[0]==1)
-		 {
-			 if((rxbuf[7]&0x04)==0)flag_1=1;  else flag_1=-1;  //方向控制位
-			 if((rxbuf[7]&0x02)==0)flag_2=1;  else flag_2=-1;  //方向控制位
-			 if((rxbuf[7]&0x01)==0)flag_3=1;  else flag_3=-1;  //方向控制位
-			 Move_X=flag_1*(rxbuf[1]*256+rxbuf[2]);
-			 Move_Y=flag_2*(rxbuf[3]*256+rxbuf[4]);	
-			 Move_Z=flag_3*(rxbuf[5]*256+rxbuf[6]);	
-			 Kinematic_Analysis(Move_X,Move_Y,Move_Z);//进行运动学分析
-			 Gyro_K=0;    
-		 }
-		 if(rxbuf[0]==2)
-		 {
-			 if((rxbuf[7]&0x08)==0)flag_1=1;  else flag_1=-1;  //方向控制位
-			 if((rxbuf[7]&0x04)==0)flag_2=1;  else flag_2=-1;  //方向控制位
-			 if((rxbuf[7]&0x02)==0)flag_3=1;  else flag_3=-1;  //方向控制位
-			 if((rxbuf[7]&0x01)==0)flag_4=1;  else flag_4=-1;  //方向控制位
-			 
-			 Target_A=flag_1*rxbuf[1];
-			 Target_B=flag_2*rxbuf[2];
-			 Target_C=flag_3*rxbuf[3];
-			 Target_D=flag_4*rxbuf[4];
-		 }
-	 }
-	 	else if(Run_Flag==1)//速度模式
-	 {
-		 if(rxbuf[0]==1)
-		 {
-			 if((rxbuf[7]&0x04)==0)flag_1=1;  else flag_1=-1;  //方向控制位
-			 if((rxbuf[7]&0x02)==0)flag_2=1;  else flag_2=-1;  //方向控制位
-			 if((rxbuf[7]&0x01)==0)flag_3=1;  else flag_3=-1;  //方向控制位
-			 Move_X=flag_1*(rxbuf[1]*256+rxbuf[2]);
-			 Move_Y=flag_2*(rxbuf[3]*256+rxbuf[4]);	
-			 Move_Z=flag_3*(rxbuf[5]*256+rxbuf[6]);	
-			 Kinematic_Analysis(Move_X,Move_Y,Move_Z);//进行运动学分析
-			 Gyro_K=0;    
-		 }
-	 }
-}
-

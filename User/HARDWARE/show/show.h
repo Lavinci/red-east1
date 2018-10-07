@@ -6,6 +6,5 @@
 Œ“µƒÃ‘±¶–°µÍ£∫http://shop114407458.taobao.com/
 **************************************************************************/
 void oled_show(void);
-void APP_Show(void);
 void DataScope(void);
 #endif
