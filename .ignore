@@ -21,3 +21,6 @@
 *.htm
 *.sct
 *.map
+*.crf
+*.d
+*.o
